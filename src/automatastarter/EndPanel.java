@@ -48,6 +48,7 @@ public class EndPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 255));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         againButton.setText("Menu");
         againButton.addActionListener(new java.awt.event.ActionListener() {
