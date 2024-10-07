@@ -7,7 +7,10 @@ package automatastarter;
 
 import utils.CardSwitcher;
 import java.awt.CardLayout;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import utils.ImageUtil;
 
 /**
  *
@@ -16,14 +19,30 @@ import javax.swing.JPanel;
 public class InfoPanel extends javax.swing.JPanel {
     public static final String CARD_NAME = "info";
     CardSwitcher switcher = null;
+    BufferedImage image;
     /**
      * Creates new form IntroPanel
      */
     public InfoPanel(CardSwitcher p) {
         initComponents();
         switcher = p;
+        image = ImageUtil.loadImage("fox.png");
+        infoLabel.setText("<html>RULES:<br/>"
+                + "- left click to place prey, right click to place predators, then press confirm to finalize positions<br/>"
+                + "- predators and prey both move one tile each step<br/>"
+                + "- prey move randomly, while predators move towards the nearest prey within 5 tiles in all directions<br/>"
+                + "- prey have a 10% chance to reproduce on any turn<br/>"
+                + "- predators have a 5% chance to reproduce if they have eaten within the last 5 steps<br/>"
+                + "- prey die if they are completely surrounded<br/>"
+                + "- predators die if they do not eat within 10 steps<br/>"
+                + "- the grid is toroidal <html>");
     }
+public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        //draw image
+        g.drawImage(image, 100, 100, this);
 
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -34,6 +53,9 @@ public class InfoPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         backButton = new javax.swing.JButton();
+        infoLabel = new javax.swing.JLabel();
+
+        setBackground(new java.awt.Color(255, 204, 153));
 
         backButton.setText("Back");
         backButton.addActionListener(new java.awt.event.ActionListener() {
@@ -42,21 +64,30 @@ public class InfoPanel extends javax.swing.JPanel {
             }
         });
 
+        infoLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        infoLabel.setText("jLabel1");
+        infoLabel.setFocusable(false);
+        infoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(151, 151, 151)
-                .addComponent(backButton)
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addGap(99, 99, 99)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(backButton))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
+                .addGap(78, 78, 78)
+                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backButton)
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addGap(91, 91, 91))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -67,5 +98,6 @@ public class InfoPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
+    private javax.swing.JLabel infoLabel;
     // End of variables declaration//GEN-END:variables
 }

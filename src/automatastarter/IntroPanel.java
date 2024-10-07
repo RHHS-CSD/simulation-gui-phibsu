@@ -7,21 +7,58 @@ package automatastarter;
 
 import utils.CardSwitcher;
 import java.awt.CardLayout;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import javax.swing.Timer;
+import utils.ImageUtil;
 
 /**
  *
  * @author michael.roy-diclemen
  */
 public class IntroPanel extends javax.swing.JPanel {
-        public static final String CARD_NAME = "intro";
+
+    public static final String CARD_NAME = "intro";
     CardSwitcher switcher = null;
+    //variables for drawing/moving the images
+    Timer animTimer;
+    int[] foxX = new int[2];
+    int[] foxY = new int[2];
+    int[] sheepX = new int[4];
+    int[] sheepY = new int[4];
+    BufferedImage sheepImg;
+    BufferedImage foxImg;
+    double[] angles = {0, Math.PI, Math.PI / 2, Math.PI / 2 * 3};
+    final int FOX_RADIUS = 175;
+    final int CENTRE_X = 335;
+    final int CENTRE_Y = 250;
+    final int SHEEP_RADIUS = 300;
+
     /**
      * Creates new form IntroPanel
      */
     public IntroPanel(CardSwitcher p) {
         initComponents();
         switcher = p;
+        animTimer = new Timer(50, new IntroPanel.AnimTimerTick());
+        animTimer.start();
+        sheepImg = ImageUtil.loadAndResizeImage("titleSheep.png", 150, 150);//, WIDTH, HEIGHT)//ImageIO.read(new File("yourFile.jpg"));
+        foxImg = ImageUtil.loadAndResizeImage("titleFox.png", 200, 100);
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        //draw all images
+        for (int i = 0; i < sheepX.length; i++) {
+            g.drawImage(sheepImg, sheepX[i], sheepY[i], this);
+        }
+        for (int i = 0; i < foxX.length; i++) {
+            g.drawImage(foxImg, foxX[i], foxY[i], this);
+        }
+
     }
 
     /**
@@ -33,17 +70,26 @@ public class IntroPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        GameButton = new javax.swing.JButton();
+        gameButton = new javax.swing.JButton();
         infoButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
-        GameButton.setText("Game");
-        GameButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GameButtonActionPerformed(evt);
+        setBackground(new java.awt.Color(255, 153, 153));
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
             }
         });
 
-        infoButton.setText("I don't know why I'm here");
+        gameButton.setText("Game");
+        gameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gameButtonActionPerformed(evt);
+            }
+        });
+
+        infoButton.setText("Info");
         infoButton.setToolTipText("");
         infoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -51,42 +97,95 @@ public class IntroPanel extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText("Fox eat Sheep Simulator!!!!!!");
+
+        jButton1.setText("Exit");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(349, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(353, 353, 353))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(151, 151, 151)
-                        .addComponent(GameButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(infoButton)))
-                .addContainerGap(144, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(376, 376, 376)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(infoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(gameButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(GameButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(infoButton)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addGap(192, 192, 192)
+                .addComponent(jLabel1)
+                .addGap(31, 31, 31)
+                .addComponent(gameButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(infoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(219, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void GameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GameButtonActionPerformed
-       switcher.switchToCard(GamePanel.CARD_NAME);
-    }//GEN-LAST:event_GameButtonActionPerformed
+    private void gameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameButtonActionPerformed
+        switcher.switchToCard(GamePanel.CARD_NAME);
+        animTimer.stop();
+    }//GEN-LAST:event_gameButtonActionPerformed
 
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
         switcher.switchToCard(InfoPanel.CARD_NAME);
+        animTimer.stop();
     }//GEN-LAST:event_infoButtonActionPerformed
 
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        animTimer.start();
+    }//GEN-LAST:event_formComponentShown
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton GameButton;
+    private javax.swing.JButton gameButton;
     private javax.swing.JButton infoButton;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+private class AnimTimerTick implements ActionListener {
+
+        public void actionPerformed(ActionEvent ae) {
+            //changes the angle for images to spin
+            for (int i = 0; i < angles.length; i++) {
+                angles[i] += Math.PI/45;
+                if (angles[i]>Math.PI*2){
+                    angles[i]=0;
+                }
+            }
+            //the stuff we want to change every clock tick (image coordinates)
+            for (int i=0; i<foxX.length; i++){
+                foxX[i] = (int) (CENTRE_X - Math.sin(angles[i]) * FOX_RADIUS);
+                foxY[i] = (int) (CENTRE_Y - Math.cos(angles[i]) * FOX_RADIUS);
+            }
+            for (int i=0; i<sheepX.length; i++){
+                sheepX[i] = (int) (CENTRE_X + Math.cos(angles[i]) * SHEEP_RADIUS);
+                sheepY[i] = (int) (CENTRE_Y + Math.sin(angles[i]) * SHEEP_RADIUS);
+            }
+            //force redraw
+            repaint();
+        }
+    }
 }

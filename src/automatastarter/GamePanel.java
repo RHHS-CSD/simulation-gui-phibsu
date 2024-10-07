@@ -5,25 +5,15 @@
  */
 package automatastarter;
 
+import java.awt.Color;
 import utils.CardSwitcher;
 import utils.ImageUtil;
 import java.awt.Graphics;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 /**
@@ -36,21 +26,21 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
 
     CardSwitcher switcher; // This is the parent panel
     Timer animTimer;
-    // Image img1 = Toolkit.getDefaultToolkit().getImage("yourFile.jpg");
-    BufferedImage img1;
-    //variables to control your animation elements
-    int x = 0;
-    int y = 10;
-    int xdir = 5;
-    int lineX = 0;
+    BufferedImage sheepImg;
+    BufferedImage foxImg;
+    final int OFFSET = 5;
+    ArraySimulation game;
+    final int HEIGHT = 640;
+    int size = HEIGHT / game.ROWS;
+    boolean started = false;
 
     /**
      * Creates new form GamePanel
      */
     public GamePanel(CardSwitcher p) {
         initComponents();
-
-        img1 = ImageUtil.loadAndResizeImage("yourFile.jpg", 300, 300);//, WIDTH, HEIGHT)//ImageIO.read(new File("yourFile.jpg"));
+        sheepImg = ImageUtil.loadAndResizeImage("sheep.png", size, size);//, WIDTH, HEIGHT)//ImageIO.read(new File("yourFile.jpg"));
+        foxImg = ImageUtil.loadAndResizeImage("fox.png", size, size);
 
         this.setFocusable(true);
 
@@ -59,35 +49,33 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         //tells us the panel that controls this one
         switcher = p;
         //create and start a Timer for animation
-        animTimer = new Timer(10, new AnimTimerTick());
-        animTimer.start();
+        animTimer = new Timer(500, new AnimTimerTick());
+        //create game grid
+        game = new ArraySimulation();
 
-        //set up the key bindings
-        setupKeys();
-
-    }
-
-    private void setupKeys() {
-        //these lines map a physical key, to a name, and then a name to an 'action'.  You will change the key, name and action to suit your needs
-        this.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftKey");
-        this.getActionMap().put("leftKey", new Move("LEFT"));
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("W"), "wKey");
-        this.getActionMap().put("wKey", new Move("w"));
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("D"), "dKey");
-        this.getActionMap().put("dKey", new Move("d"));
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("X"), "xKey");
-        this.getActionMap().put("xKey", new Move("x"));
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (img1 != null) {
-            g.drawImage(img1, x, y, this);
+        //draw the animals
+        for (int r = 0; r < game.ROWS; r++) {
+            for (int c = 0; c < game.COLUMNS; c++) {
+                if (game.grid[r][c] == 1) {
+                    g.drawImage(sheepImg, c * size + OFFSET, r * size + OFFSET, this);
+                } else if (game.grid[r][c] == 2) {
+                    g.drawImage(foxImg, c * size + OFFSET, r * size + OFFSET, this);
+                }
+            }
         }
-        g.drawLine(lineX, 0, 300, 300);
+
+        //draw the grid outlines
+        g.setColor(Color.BLACK);
+        for (int r = 0; r <= game.ROWS; r++) {
+            for (int c = 0; c <= game.COLUMNS; c++) {
+                g.drawLine(OFFSET + c * size, OFFSET, OFFSET + c * size, game.COLUMNS * size + OFFSET);
+            }
+            g.drawLine(OFFSET, r * size + OFFSET, OFFSET + game.ROWS * size, r * size + OFFSET);
+        }
     }
 
     /**
@@ -99,43 +87,134 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        stepButton = new javax.swing.JButton();
+        stopButton = new javax.swing.JButton();
+        confirmButton = new javax.swing.JButton();
+        endButton = new javax.swing.JButton();
+        startButton = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(204, 255, 204));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 formComponentShown(evt);
             }
         });
 
-        jLabel1.setText("Game");
+        stepButton.setText("Step");
+        stepButton.setEnabled(false);
+        stepButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stepButtonActionPerformed(evt);
+            }
+        });
+
+        stopButton.setText("Stop");
+        stopButton.setEnabled(false);
+        stopButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopButtonActionPerformed(evt);
+            }
+        });
+
+        confirmButton.setText("Confirm ");
+        confirmButton.setToolTipText("");
+        confirmButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmButtonActionPerformed(evt);
+            }
+        });
+
+        endButton.setText("End");
+        endButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                endButtonActionPerformed(evt);
+            }
+        });
+
+        startButton.setText("Start");
+        startButton.setEnabled(false);
+        startButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(174, 174, 174)
-                .addComponent(jLabel1)
-                .addContainerGap(199, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(695, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(endButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(confirmButton, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                    .addComponent(stopButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(stepButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(startButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(47, 47, 47))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(135, 135, 135)
-                .addComponent(jLabel1)
-                .addContainerGap(151, Short.MAX_VALUE))
+                .addGap(45, 45, 45)
+                .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(stepButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 236, Short.MAX_VALUE)
+                .addComponent(endButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
-        lineX = 0;
+//        lineX = 0;
     }//GEN-LAST:event_formComponentShown
+
+    private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
+        game.step();
+        repaint();
+    }//GEN-LAST:event_stepButtonActionPerformed
+
+    private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
+        started = true;
+        game.fillGrid();
+        confirmButton.setEnabled(false);
+        startButton.setEnabled(true);
+        stopButton.setEnabled(true);
+        stepButton.setEnabled(true);
+    }//GEN-LAST:event_confirmButtonActionPerformed
+
+    private void endButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endButtonActionPerformed
+        animTimer.stop();
+        started = false;
+        game.reset();
+        switcher.switchToCard(EndPanel.CARD_NAME);
+        confirmButton.setEnabled(true);
+        startButton.setEnabled(false);
+        stopButton.setEnabled(false);
+        stepButton.setEnabled(false);
+    }//GEN-LAST:event_endButtonActionPerformed
+
+    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
+        animTimer.stop();
+    }//GEN-LAST:event_stopButtonActionPerformed
+
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        animTimer.start();
+    }//GEN-LAST:event_startButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton confirmButton;
+    private javax.swing.JButton endButton;
+    private javax.swing.JButton startButton;
+    private javax.swing.JButton stepButton;
+    private javax.swing.JButton stopButton;
     // End of variables declaration//GEN-END:variables
-
     /**
      * This event captures a click which is defined as pressing and releasing in
      * the same area
@@ -143,9 +222,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseClicked(MouseEvent me) {
-        System.out.println("Click: " + me.getX() + ":" + me.getY());
-        x = 5;
-        y = 5;
+        if (!started) {
+            //check the cursor is on a tile during the click
+            int row = (me.getY() - OFFSET) / size;
+            int col = (me.getX() - OFFSET) / size;
+            int button = me.getButton();
+
+            if (me.getX() < size*game.COLUMNS){
+            //edit the grid based on how the user clicks
+            if (button == 1) {
+                game.editTile(row, col, 1);
+            } else if (button == 3) {
+                game.editTile(row, col, 2);
+            }
+        }}
+        repaint();
+
     }
 
     /**
@@ -154,7 +246,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mousePressed(MouseEvent me) {
-        System.out.println("Press: " + me.getX() + ":" + me.getY());
     }
 
     /**
@@ -163,7 +254,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseReleased(MouseEvent me) {
-        System.out.println("Release: " + me.getX() + ":" + me.getY());
     }
 
     /**
@@ -172,7 +262,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseEntered(MouseEvent me) {
-        System.out.println("Enter: " + me.getX() + ":" + me.getY());
     }
 
     /**
@@ -181,32 +270,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseExited(MouseEvent me) {
-        System.out.println("Exit: " + me.getX() + ":" + me.getY());
-    }
-
-    /**
-     * Everything inside here happens when you click on a captured key.
-     */
-    private class Move extends AbstractAction {
-
-        String key;
-
-        public Move(String akey) {
-            key = akey;
-        }
-
-        public void actionPerformed(ActionEvent ae) {
-            // here you decide what you want to happen if a particular key is pressed
-            System.out.println("llll" + key);
-            switch(key){
-                case "d": x+=2; break;
-                case "x": animTimer.stop(); switcher.switchToCard(EndPanel.CARD_NAME); break;
-            }
-            if (key.equals("d")) {
-                x = x + 2;
-            }
-            
-        }
 
     }
 
@@ -218,7 +281,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
 
         public void actionPerformed(ActionEvent ae) {
             //the stuff we want to change every clock tick
-            lineX++;
+            game.step();
             //force redraw
             repaint();
         }
