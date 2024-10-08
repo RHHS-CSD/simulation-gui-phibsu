@@ -32,12 +32,16 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="speedSlider" min="-2" pref="57" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="endButton" max="32767" attributes="0"/>
-                      <Component id="confirmButton" pref="108" max="32767" attributes="0"/>
-                      <Component id="stopButton" max="32767" attributes="0"/>
-                      <Component id="stepButton" max="32767" attributes="0"/>
-                      <Component id="startButton" alignment="0" max="32767" attributes="0"/>
+                  <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                      <Component id="predatorLabel" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="endButton" max="32767" attributes="0"/>
+                          <Component id="confirmButton" pref="108" max="32767" attributes="0"/>
+                          <Component id="stopButton" max="32767" attributes="0"/>
+                          <Component id="stepButton" max="32767" attributes="0"/>
+                          <Component id="startButton" alignment="0" max="32767" attributes="0"/>
+                      </Group>
+                      <Component id="preyLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
@@ -65,9 +69,13 @@
                       <Component id="speedLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="68" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="endButton" min="-2" pref="50" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+              <EmptySpace pref="34" max="32767" attributes="0"/>
+              <Component id="preyLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="predatorLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -122,6 +130,9 @@
         <Property name="maximum" type="int" value="1500"/>
         <Property name="minimum" type="int" value="100"/>
         <Property name="orientation" type="int" value="1"/>
+        <Property name="paintLabels" type="boolean" value="true"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+        <Property name="value" type="int" value="500"/>
       </Properties>
       <Events>
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="speedSliderStateChanged"/>
@@ -130,6 +141,16 @@
     <Component class="javax.swing.JLabel" name="speedLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Speed: 0.5 "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="preyLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jLabel1"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="predatorLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jLabel2"/>
       </Properties>
     </Component>
   </SubComponents>

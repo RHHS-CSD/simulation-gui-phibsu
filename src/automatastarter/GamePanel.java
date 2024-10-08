@@ -54,6 +54,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         animTimer = new Timer(speed, new AnimTimerTick());
         //create game grid
         game = new ArraySimulation();
+        
+        preyLabel.setVisible(false);
+        predatorLabel.setVisible(false);
 
     }
 
@@ -78,6 +81,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             }
             g.drawLine(OFFSET, r * size + OFFSET, OFFSET + game.ROWS * size, r * size + OFFSET);
         }
+        //update labels
+        preyLabel.setText(game.prey.size() + " prey");
+        predatorLabel.setText(game.predators.size() + " predators");
     }
 
     /**
@@ -96,6 +102,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         startButton = new javax.swing.JButton();
         speedSlider = new javax.swing.JSlider();
         speedLabel = new javax.swing.JLabel();
+        preyLabel = new javax.swing.JLabel();
+        predatorLabel = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(204, 255, 204));
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -146,6 +154,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         speedSlider.setMaximum(1500);
         speedSlider.setMinimum(100);
         speedSlider.setOrientation(javax.swing.JSlider.VERTICAL);
+        speedSlider.setPaintLabels(true);
+        speedSlider.setToolTipText("");
+        speedSlider.setValue(500);
         speedSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 speedSliderStateChanged(evt);
@@ -153,6 +164,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         });
 
         speedLabel.setText("Speed: 0.5 ");
+
+        preyLabel.setText("jLabel1");
+
+        predatorLabel.setText("jLabel2");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -165,12 +180,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
                         .addComponent(speedLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(speedSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(endButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(confirmButton, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
-                        .addComponent(stopButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(stepButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(startButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(predatorLabel)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(endButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(confirmButton, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                            .addComponent(stopButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(stepButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(startButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(preyLabel)))
                 .addGap(47, 47, 47))
         );
         layout.setVerticalGroup(
@@ -191,9 +209,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(90, 90, 90)
                         .addComponent(speedLabel)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(endButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(55, 55, 55))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(preyLabel)
+                .addGap(18, 18, 18)
+                .addComponent(predatorLabel)
+                .addGap(21, 21, 21))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -213,6 +235,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         startButton.setEnabled(true);
         stopButton.setEnabled(true);
         stepButton.setEnabled(true);
+        preyLabel.setVisible(true);
+        predatorLabel.setVisible(true);
     }//GEN-LAST:event_confirmButtonActionPerformed
 
     private void endButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endButtonActionPerformed
@@ -224,6 +248,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         startButton.setEnabled(false);
         stopButton.setEnabled(false);
         stepButton.setEnabled(false);
+        preyLabel.setVisible(false);
+        predatorLabel.setVisible(false);
     }//GEN-LAST:event_endButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
@@ -244,6 +270,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton confirmButton;
     private javax.swing.JButton endButton;
+    private javax.swing.JLabel predatorLabel;
+    private javax.swing.JLabel preyLabel;
     private javax.swing.JLabel speedLabel;
     private javax.swing.JSlider speedSlider;
     private javax.swing.JButton startButton;

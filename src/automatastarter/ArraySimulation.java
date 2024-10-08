@@ -63,8 +63,8 @@ public class ArraySimulation {
 //    }
     public ArraySimulation() {
         grid = new int[ROWS][COLUMNS]; //0:empty // 1:prey // 2:predator
-        predators = new ArrayList(); //y,x, hunger
-        prey = new ArrayList(); //y,x
+        predators = new ArrayList(0); //y,x, hunger
+        prey = new ArrayList(0); //y,x
     }
 
     protected void randomizeGrid() {
